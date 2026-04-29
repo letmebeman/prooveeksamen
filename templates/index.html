@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NordTek Solutions AS – Intern Portal</title>
+
+  <!-- Google Font: Inter (clean, professional sans-serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- ===== HEADER / NAVIGATION ===== -->
+  <header class="header">
+    <div class="header__inner">
+      <!-- Company logo / name -->
+      <div class="header__brand">
+        <span class="header__logo">&#9670;</span>
+        <span class="header__company">[COMPANY NAME]</span>
+      </div>
+
+      <!-- Main navigation tabs -->
+      <nav class="header__nav" aria-label="Hovednavigasjon">
+        <button class="nav-btn active" data-section="status" aria-current="page">
+          <span class="nav-btn__icon">&#9679;</span> System Status
+        </button>
+        <button class="nav-btn" data-section="guide">
+          <span class="nav-btn__icon">&#9998;</span> Support Guide
+        </button>
+        <button class="nav-btn" data-section="logg">
+          <span class="nav-btn__icon">&#9888;</span> Logg feil
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main">
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- SECTION 1 – SYSTEM STATUS                                           -->
+    <!-- ------------------------------------------------------------------ -->
+    <section id="section-status" class="section section--active" aria-label="System Status">
+      <div class="section__header">
+        <h1 class="section__title">System Status</h1>
+        <p class="section__subtitle">
+          Oversikt over alle overvåkede tjenester. Oppdateres automatisk hvert 60. sekund.
+        </p>
+      </div>
+
+      <!-- Overall health banner -->
+      <div id="overall-banner" class="banner banner--loading">
+        <span id="overall-icon" class="banner__icon">&#8635;</span>
+        <span id="overall-text">Laster status…</span>
+      </div>
+
+      <!-- Service cards grid (populated by script.js) -->
+      <div id="service-grid" class="service-grid" aria-live="polite">
+        <!-- Cards injected by JavaScript -->
+      </div>
+
+      <!-- Last updated timestamp -->
+      <p id="last-updated" class="last-updated"></p>
+
+      <!-- Placeholder note for admins -->
+      <div class="info-box">
+        <strong>Admin:</strong> [STATUS HERE] – Erstatt tjenestene i <code>app.py → SERVICES</code>
+        med faktiske overvåkingsdata fra ditt monitoreringsverktøy.
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- SECTION 2 – SUPPORT GUIDE                                          -->
+    <!-- ------------------------------------------------------------------ -->
+    <section id="section-guide" class="section" aria-label="Support Guide">
+      <div class="section__header">
+        <h1 class="section__title">Support Guide</h1>
+        <p class="section__subtitle">
+          Intern veileder for ansatte og teknikere. Les nøye før du kontakter support.
+        </p>
+      </div>
+
+      <!-- Guide accordion / articles -->
+      <div class="guide-list">
+
+        <details class="guide-item" open>
+          <summary class="guide-item__title">1. Generell feilsøking</summary>
+          <div class="guide-item__body">
+            <p>[INSERT GUIDE] – Legg til steg-for-steg feilsøkingsinstruksjoner her.
+               For eksempel: restart server, sjekk logger, verifiser DNS osv.</p>
+          </div>
+        </details>
+
+        <details class="guide-item">
+          <summary class="guide-item__title">2. Webhotell – vanlige problemer</summary>
+          <div class="guide-item__body">
+            <p>[INSERT GUIDE] – Beskriv vanlige hosting-problemer og løsninger.
+               F.eks.: nettsted nede, SSL-sertifikat utløpt, kapasitet full.</p>
+          </div>
+        </details>
+
+        <details class="guide-item">
+          <summary class="guide-item__title">3. E-post og domene</summary>
+          <div class="guide-item__body">
+            <p>[INSERT GUIDE] – Instruksjoner for e-postkonfigurasjon, MX-poster,
+               og domeneadministrasjon.</p>
+          </div>
+        </details>
+
+        <details class="guide-item">
+          <summary class="guide-item__title">4. Backup og gjenoppretting</summary>
+          <div class="guide-item__body">
+            <p>[INSERT GUIDE] – Prosedyrer for sikkerhetskopiering og gjenoppretting
+               av data. Inkluder RTO/RPO-mål.</p>
+          </div>
+        </details>
+
+        <details class="guide-item">
+          <summary class="guide-item__title">5. Eskalering og kontakter</summary>
+          <div class="guide-item__body">
+            <p>[INSERT GUIDE] – Hvem kontakter du ved kritiske feil?
+               Legg til navn, telefon og e-post for nøkkelressurser.</p>
+          </div>
+        </details>
+
+      </div><!-- /.guide-list -->
+    </section>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- SECTION 3 – LOGG FEIL                                              -->
+    <!-- ------------------------------------------------------------------ -->
+    <section id="section-logg" class="section" aria-label="Logg feil">
+      <div class="section__header">
+        <h1 class="section__title">Logg feil</h1>
+        <p class="section__subtitle">
+          Bruk skjemaet nedenfor for å rapportere en feil eller et problem.
+        </p>
+      </div>
+
+      <!-- Success / error feedback message (hidden by default) -->
+      <div id="form-feedback" class="form-feedback" role="alert" aria-live="assertive" hidden></div>
+
+      <form id="error-form" class="error-form" novalidate>
+
+        <div class="form-row form-row--split">
+          <!-- Name -->
+          <div class="form-group">
+            <label class="form-label" for="f-name">Ditt navn <span class="required">*</span></label>
+            <input
+              class="form-input"
+              type="text"
+              id="f-name"
+              name="name"
+              placeholder="Ola Nordmann"
+              required
+              autocomplete="name"
+            />
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label" for="f-email">E-post <span class="required">*</span></label>
+            <input
+              class="form-input"
+              type="email"
+              id="f-email"
+              name="email"
+              placeholder="ola@nordtek.no"
+              required
+              autocomplete="email"
+            />
+          </div>
+        </div><!-- /.form-row -->
+
+        <!-- Category -->
+        <div class="form-group">
+          <label class="form-label" for="f-category">Kategori <span class="required">*</span></label>
+          <select class="form-input form-select" id="f-category" name="category" required>
+            <option value="" disabled selected>Velg kategori…</option>
+            <option value="webhotell">Webhotell</option>
+            <option value="epost">E-post / Domene</option>
+            <option value="nettverk">Nettverk</option>
+            <option value="backup">Backup / Gjenoppretting</option>
+            <option value="sikkerhet">Sikkerhet</option>
+            <option value="annet">Annet</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label" for="f-description">
+            Feilbeskrivelse <span class="required">*</span>
+          </label>
+          <textarea
+            class="form-input form-textarea"
+            id="f-description"
+            name="description"
+            rows="5"
+            placeholder="Beskriv feilen så nøyaktig som mulig. Inkluder tidspunkt, feilmeldinger og hva du allerede har forsøkt."
+            required
+          ></textarea>
+        </div>
+
+        <!-- Submit -->
+        <button class="btn btn--primary" type="submit" id="submit-btn">
+          <span id="submit-label">Send inn rapport</span>
+          <span id="submit-spinner" class="spinner" hidden aria-hidden="true"></span>
+        </button>
+
+      </form>
+    </section>
+
+  </main><!-- /.main -->
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <p>&copy; <span id="year"></span> [COMPANY NAME] &mdash; Intern bruk kun</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
