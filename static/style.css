@@ -1,0 +1,619 @@
+/* =============================================================================
+   style.css – NordTek Solutions AS Internal Portal
+   Dark navy theme, responsive, professional UI
+   ============================================================================= */
+
+/* -------------------------------------------------------------------------- */
+/* 0. CSS Custom Properties (Design Tokens)                                   */
+/* -------------------------------------------------------------------------- */
+:root {
+  /* Color palette */
+  --color-bg:         #0d1117;   /* deepest background */
+  --color-surface:    #161b22;   /* card / section surfaces */
+  --color-surface-2:  #1e2530;   /* slightly lighter surface */
+  --color-border:     #30363d;   /* subtle borders */
+  --color-text:       #e6edf3;   /* primary text */
+  --color-text-muted: #8b949e;   /* secondary / muted text */
+  --color-accent:     #58a6ff;   /* blue accent */
+  --color-accent-2:   #388bfd;   /* darker blue for hover */
+
+  /* Status colours */
+  --color-ok:         #3fb950;   /* green – operational */
+  --color-warn:       #d29922;   /* amber – degraded */
+  --color-error:      #f85149;   /* red – down */
+
+  /* Spacing */
+  --space-xs:  0.25rem;
+  --space-sm:  0.5rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+  --space-2xl: 3rem;
+
+  /* Typography */
+  --font-base: "Inter", system-ui, -apple-system, sans-serif;
+  --font-size-sm:   0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg:   1.125rem;
+  --font-size-xl:   1.5rem;
+  --font-size-2xl:  2rem;
+
+  /* Borders & Shadows */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 1. Reset & Base                                                             */
+/* -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-base);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+code {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--color-surface-2);
+  padding: 2px 5px;
+  border-radius: var(--radius-sm);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. Header                                                                   */
+/* -------------------------------------------------------------------------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.header__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+/* Brand */
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.header__logo {
+  font-size: 1.4rem;
+  color: var(--color-accent);
+}
+
+.header__company {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+}
+
+/* Navigation */
+.header__nav {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-family: var(--font-base);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.nav-btn:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.nav-btn.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.nav-btn__icon { font-size: 0.7rem; }
+
+/* -------------------------------------------------------------------------- */
+/* 3. Main Content                                                             */
+/* -------------------------------------------------------------------------- */
+.main {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-xl);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. Sections (tab panels)                                                   */
+/* -------------------------------------------------------------------------- */
+.section {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.section--active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section__header {
+  margin-bottom: var(--space-xl);
+}
+
+.section__title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.section__subtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5. System Status – Banner                                                  */
+/* -------------------------------------------------------------------------- */
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-xl);
+  border: 1px solid transparent;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.banner--loading {
+  background: var(--color-surface-2);
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.banner--ok {
+  background: rgba(63, 185, 80, 0.12);
+  border-color: var(--color-ok);
+  color: var(--color-ok);
+}
+
+.banner--warn {
+  background: rgba(210, 153, 34, 0.12);
+  border-color: var(--color-warn);
+  color: var(--color-warn);
+}
+
+.banner--error {
+  background: rgba(248, 81, 73, 0.12);
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.banner__icon {
+  font-size: 1.4rem;
+}
+
+/* Spinning refresh icon while loading */
+.banner--loading .banner__icon {
+  display: inline-block;
+  animation: spin 1.2s linear infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. System Status – Service Grid                                            */
+/* -------------------------------------------------------------------------- */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.service-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.service-card--operational { border-left-color: var(--color-ok); }
+.service-card--degraded    { border-left-color: var(--color-warn); }
+.service-card--down        { border-left-color: var(--color-error); }
+
+.service-card__name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--color-text);
+}
+
+.service-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-md);
+  font-size: var(--font-size-sm);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.78rem;
+  text-transform: capitalize;
+}
+
+.status-badge::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-badge--operational {
+  color: var(--color-ok);
+  background: rgba(63, 185, 80, 0.15);
+}
+
+.status-badge--degraded {
+  color: var(--color-warn);
+  background: rgba(210, 153, 34, 0.15);
+}
+
+.status-badge--down {
+  color: var(--color-error);
+  background: rgba(248, 81, 73, 0.15);
+}
+
+.service-uptime {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 7. Info Box                                                                 */
+/* -------------------------------------------------------------------------- */
+.info-box {
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(88, 166, 255, 0.07);
+  border: 1px solid rgba(88, 166, 255, 0.25);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.last-updated {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: right;
+  margin-bottom: var(--space-md);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 8. Support Guide                                                            */
+/* -------------------------------------------------------------------------- */
+.guide-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.guide-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.guide-item__title {
+  padding: var(--space-md) var(--space-lg);
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text);
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.guide-item__title:hover {
+  background: var(--color-surface-2);
+}
+
+/* Custom disclosure triangle */
+.guide-item__title::after {
+  content: "▸";
+  font-size: 0.9rem;
+  color: var(--color-accent);
+  transition: transform 0.2s;
+}
+
+.guide-item[open] .guide-item__title::after {
+  transform: rotate(90deg);
+}
+
+/* Remove default <summary> marker in all browsers */
+.guide-item__title::-webkit-details-marker { display: none; }
+
+.guide-item__body {
+  padding: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-base);
+  line-height: 1.75;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 9. Error Logging Form                                                       */
+/* -------------------------------------------------------------------------- */
+.error-form {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  max-width: 760px;
+}
+
+.form-row {
+  margin-bottom: var(--space-lg);
+}
+
+.form-row--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.required {
+  color: var(--color-error);
+  margin-left: 2px;
+}
+
+.form-input {
+  padding: 0.6rem var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: var(--font-size-base);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.form-input::placeholder { color: var(--color-text-muted); }
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238b949e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Form feedback banner */
+.form-feedback {
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  font-weight: 500;
+}
+
+.form-feedback--success {
+  background: rgba(63, 185, 80, 0.12);
+  border: 1px solid var(--color-ok);
+  color: var(--color-ok);
+}
+
+.form-feedback--error {
+  background: rgba(248, 81, 73, 0.12);
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 10. Buttons                                                                 */
+/* -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.65rem var(--space-xl);
+  border-radius: var(--radius-md);
+  font-family: var(--font-base);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn--primary {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background: var(--color-accent-2);
+}
+
+.btn--primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 11. Spinner                                                                 */
+/* -------------------------------------------------------------------------- */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 12. Footer                                                                  */
+/* -------------------------------------------------------------------------- */
+.footer {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  padding: var(--space-lg) var(--space-xl);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 13. Responsive Breakpoints                                                  */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .header__inner {
+    padding: var(--space-md);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header__nav {
+    width: 100%;
+  }
+
+  .nav-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .main {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .form-row--split {
+    grid-template-columns: 1fr;
+  }
+
+  .section__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .error-form {
+    padding: var(--space-lg) var(--space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .service-grid {
+    grid-template-columns: 1fr;
+  }
+}
