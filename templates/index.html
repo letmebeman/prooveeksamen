@@ -27,15 +27,15 @@
 
       <!-- Main navigation tabs -->
       <nav class="header__nav" aria-label="Hovednavigasjon">
-        <button class="nav-btn active" data-section="status" aria-current="page">
+        <a class="nav-btn {% if active_section == 'status' %}active{% endif %}" href="{{ url_for('index', section='status') }}" {% if active_section == 'status' %}aria-current="page"{% endif %}>
           <span class="nav-btn__icon">&#9679;</span> System Status
-        </button>
-        <button class="nav-btn" data-section="guide">
+        </a>
+        <a class="nav-btn {% if active_section == 'guide' %}active{% endif %}" href="{{ url_for('index', section='guide') }}" {% if active_section == 'guide' %}aria-current="page"{% endif %}>
           <span class="nav-btn__icon">&#9998;</span> Support Guide
-        </button>
-        <button class="nav-btn" data-section="logg">
+        </a>
+        <a class="nav-btn {% if active_section == 'logg' %}active{% endif %}" href="{{ url_for('index', section='logg') }}" {% if active_section == 'logg' %}aria-current="page"{% endif %}>
           <span class="nav-btn__icon">&#9888;</span> Logg feil
-        </button>
+        </a>
       </nav>
     </div>
   </header>
@@ -46,27 +46,35 @@
     <!-- ------------------------------------------------------------------ -->
     <!-- SECTION 1 – SYSTEM STATUS                                           -->
     <!-- ------------------------------------------------------------------ -->
-    <section id="section-status" class="section section--active" aria-label="System Status">
+    <section id="section-status" class="section {% if active_section == 'status' %}section--active{% endif %}" aria-label="System Status">
       <div class="section__header">
         <h1 class="section__title">System Status</h1>
         <p class="section__subtitle">
-          Oversikt over alle overvåkede tjenester. Oppdateres automatisk hvert 60. sekund.
+          Oversikt over alle overvåkede tjenester.
         </p>
       </div>
 
       <!-- Overall health banner -->
-      <div id="overall-banner" class="banner banner--loading">
-        <span id="overall-icon" class="banner__icon">&#8635;</span>
-        <span id="overall-text">Laster status…</span>
+      <div id="overall-banner" class="banner {{ banner.class }}">
+        <span id="overall-icon" class="banner__icon">{{ banner.icon }}</span>
+        <span id="overall-text">{{ banner.message }}</span>
       </div>
 
-      <!-- Service cards grid (populated by script.js) -->
+      <!-- Service cards grid -->
       <div id="service-grid" class="service-grid" aria-live="polite">
-        <!-- Cards injected by JavaScript -->
+        {% for service in services %}
+        <div class="service-card service-card--{{ service.status_mod }}">
+          <div class="service-card__name">{{ service.name }}</div>
+          <div class="service-card__footer">
+            <span class="status-badge status-badge--{{ service.status_mod }}">{{ service.status_label }}</span>
+            <span class="service-uptime">Oppetid: {{ service.uptime }}</span>
+          </div>
+        </div>
+        {% endfor %}
       </div>
 
       <!-- Last updated timestamp -->
-      <p id="last-updated" class="last-updated"></p>
+      <p id="last-updated" class="last-updated">Sist oppdatert: {{ updated }}</p>
 
       <!-- Placeholder note for admins -->
       <div class="info-box">
@@ -78,7 +86,7 @@
     <!-- ------------------------------------------------------------------ -->
     <!-- SECTION 2 – SUPPORT GUIDE                                          -->
     <!-- ------------------------------------------------------------------ -->
-    <section id="section-guide" class="section" aria-label="Support Guide">
+    <section id="section-guide" class="section {% if active_section == 'guide' %}section--active{% endif %}" aria-label="Support Guide">
       <div class="section__header">
         <h1 class="section__title">Support Guide</h1>
         <p class="section__subtitle">
@@ -135,7 +143,7 @@
     <!-- ------------------------------------------------------------------ -->
     <!-- SECTION 3 – LOGG FEIL                                              -->
     <!-- ------------------------------------------------------------------ -->
-    <section id="section-logg" class="section" aria-label="Logg feil">
+    <section id="section-logg" class="section {% if active_section == 'logg' %}section--active{% endif %}" aria-label="Logg feil">
       <div class="section__header">
         <h1 class="section__title">Logg feil</h1>
         <p class="section__subtitle">
@@ -143,10 +151,15 @@
         </p>
       </div>
 
-      <!-- Success / error feedback message (hidden by default) -->
-      <div id="form-feedback" class="form-feedback" role="alert" aria-live="assertive" hidden></div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+          <div class="form-feedback form-feedback--{{ category }}" role="alert" aria-live="assertive">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
 
-      <form id="error-form" class="error-form" novalidate>
+      <form id="error-form" class="error-form" method="post" action="{{ url_for('log_error') }}">
 
         <div class="form-row form-row--split">
           <!-- Name -->
@@ -220,9 +233,7 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="footer">
-    <p>&copy; <span id="year"></span> Nordtek AS &mdash; Intern bruk kun</p>
+    <p>&copy; {{ current_year }} Nordtek AS &mdash; Intern bruk kun</p>
   </footer>
-
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

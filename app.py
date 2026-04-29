@@ -4,10 +4,11 @@ Handles routing for the main portal page, system status API, and error logging.
 """
 
 import os
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
 # ---------------------------------------------------------------------------
 # In-memory store for logged errors (replace with a database in production)
@@ -26,6 +27,50 @@ SERVICES = [
     {"name": "Overvåking (Monitoring)","status": "operational",  "uptime": "99.90%"},
 ]
 
+STATUS_MAP = {
+    "operational": {"mod": "operational", "label": "Operativ"},
+    "degraded": {"mod": "degraded", "label": "Degradert"},
+    "down": {"mod": "down", "label": "Nede"},
+}
+
+
+def decorate_services(services):
+    """Attach presentation metadata to each service for the template."""
+    decorated = []
+    for service in services:
+        meta = STATUS_MAP.get(service["status"], {"mod": "down", "label": service["status"]})
+        decorated.append({**service, "status_mod": meta["mod"], "status_label": meta["label"]})
+    return decorated
+
+
+def build_banner(services):
+    """Build the overall status banner from the current service list."""
+    statuses = [service["status"] for service in services]
+
+    if "down" in statuses:
+        return {"class": "banner--error", "icon": "✕", "message": "Kritisk – én eller flere tjenester er nede"}
+    if "degraded" in statuses:
+        return {"class": "banner--warn", "icon": "⚠", "message": "Advarsel – noen tjenester er degradert"}
+    return {"class": "banner--ok", "icon": "✓", "message": "Alle systemer operative"}
+
+
+def store_error(data):
+    """Validate and persist a submitted error report."""
+    required = ["name", "email", "category", "description"]
+    payload = {field: (data.get(field, "") or "").strip() for field in required}
+
+    for field in required:
+        if not payload[field]:
+            return False, f"Feltet '{field}' er påkrevd.", None
+
+    entry = {
+        "id": len(logged_errors) + 1,
+        "timestamp": datetime.now().strftime("%d.%m.%Y %H:%M"),
+        **payload,
+    }
+    logged_errors.append(entry)
+    return True, "Feilen er registrert. Takk!", entry["id"]
+
 
 # ---------------------------------------------------------------------------
 # Routes
@@ -34,7 +79,16 @@ SERVICES = [
 @app.route("/")
 def index():
     """Render the main portal page."""
-    return render_template("index.html")
+    active_section = request.args.get("section", "status")
+    services = decorate_services(SERVICES)
+    return render_template(
+        "index.html",
+        active_section=active_section,
+        services=services,
+        banner=build_banner(SERVICES),
+        updated=datetime.now().strftime("%d.%m.%Y %H:%M"),
+        current_year=datetime.now().year,
+    )
 
 
 @app.route("/api/status")
@@ -52,24 +106,23 @@ def api_log_error():
     Accepts a JSON payload from the 'Logg feil' form and stores it.
     Expected fields: name, email, category, description
     """
-    data = request.get_json(silent=True)
+    data = request.get_json(silent=True) or request.form
     if not data:
         return jsonify({"success": False, "message": "Ingen data mottatt."}), 400
 
-    # Basic validation
-    required = ["name", "email", "category", "description"]
-    for field in required:
-        if not data.get(field, "").strip():
-            return jsonify({"success": False, "message": f"Feltet '{field}' er påkrevd."}), 400
+    success, message, entry_id = store_error(data)
+    if not success:
+        return jsonify({"success": False, "message": message}), 400
 
-    entry = {
-        "id": len(logged_errors) + 1,
-        "timestamp": datetime.now().strftime("%d.%m.%Y %H:%M"),
-        **{k: data[k].strip() for k in required},
-    }
-    logged_errors.append(entry)
+    return jsonify({"success": True, "message": message, "id": entry_id})
 
-    return jsonify({"success": True, "message": "Feilen er registrert. Takk!", "id": entry["id"]})
+
+@app.route("/log-error", methods=["POST"])
+def log_error():
+    """Handle the browser form submission without JavaScript."""
+    success, message, _ = store_error(request.form)
+    flash(message, "success" if success else "error")
+    return redirect(url_for("index", section="logg"))
 
 
 @app.route("/api/errors")

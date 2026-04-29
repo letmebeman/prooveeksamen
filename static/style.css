@@ -146,6 +146,7 @@ code {
   font-size: var(--font-size-sm);
   font-weight: 500;
   cursor: pointer;
+  text-decoration: none;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
@@ -153,6 +154,7 @@ code {
   background: var(--color-surface-2);
   color: var(--color-text);
   border-color: var(--color-accent);
+  text-decoration: none;
 }
 
 .nav-btn.active {
